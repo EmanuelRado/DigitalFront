@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitalFront — Websites That Work for Your Business</title>
+  <meta name="description" content="Professional, fast, and functional websites for local businesses and restaurants. Delivered in 2 weeks, built to generate results.">
+
+  <!-- Google Fonts Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./src/css/design-system.css">
+  <link rel="stylesheet" href="./src/css/layout.css">
+  <link rel="stylesheet" href="./src/css/components.css">
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- Scroll Progress -->
+  <div class="scroll-progress"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="./index.html" class="navbar-logo" aria-label="DigitalFront Home">
+        <svg width="284" height="40" viewBox="0 0 284 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.992 29V12.2H9.624C11.448 12.2 13.056 12.552 14.448 13.256C15.84 13.944 16.928 14.912 17.712 16.16C18.496 17.408 18.888 18.888 18.888 20.6C18.888 22.296 18.496 23.776 17.712 25.04C16.928 26.288 15.84 27.264 14.448 27.968C13.056 28.656 11.448 29 9.624 29H1.992ZM5.88 25.808H9.432C10.552 25.808 11.52 25.6 12.336 25.184C13.168 24.752 13.808 24.144 14.256 23.36C14.72 22.576 14.952 21.656 14.952 20.6C14.952 19.528 14.72 18.608 14.256 17.84C13.808 17.056 13.168 16.456 12.336 16.04C11.52 15.608 10.552 15.392 9.432 15.392H5.88V25.808ZM21.8201 29V12.2H25.7081V29H21.8201ZM37.8071 29.288C36.4791 29.288 35.2551 29.08 34.1351 28.664C33.0311 28.232 32.0631 27.624 31.2311 26.84C30.4151 26.056 29.7751 25.136 29.3111 24.08C28.8631 23.024 28.6391 21.864 28.6391 20.6C28.6391 19.336 28.8631 18.176 29.3111 17.12C29.7751 16.064 30.4231 15.144 31.2551 14.36C32.0871 13.576 33.0631 12.976 34.1831 12.56C35.3031 12.128 36.5351 11.912 37.8791 11.912C39.3671 11.912 40.7031 12.16 41.8871 12.656C43.0871 13.152 44.0951 13.872 44.9111 14.816L42.4151 17.12C41.8071 16.48 41.1431 16.008 40.4231 15.704C39.7031 15.384 38.9191 15.224 38.0711 15.224C37.2551 15.224 36.5111 15.352 35.8391 15.608C35.1671 15.864 34.5831 16.232 34.0871 16.712C33.6071 17.192 33.2311 17.76 32.9591 18.416C32.7031 19.072 32.5751 19.8 32.5751 20.6C32.5751 21.384 32.7031 22.104 32.9591 22.76C33.2311 23.416 33.6071 23.992 34.0871 24.488C34.5831 24.968 35.1591 25.336 35.8151 25.592C36.4871 25.848 37.2231 25.976 38.0231 25.976C38.7911 25.976 39.5351 25.856 40.2551 25.616C40.9911 25.36 41.7031 24.936 42.3911 24.344L44.5991 27.152C43.6871 27.84 42.6231 28.368 41.4071 28.736C40.2071 29.104 39.0071 29.288 37.8071 29.288ZM41.0471 26.648V20.336H44.5991V27.152L41.0471 26.648ZM48.2108 29V12.2H52.0988V29H48.2108ZM59.5658 29V15.368H54.1898V12.2H68.8298V15.368H63.4538V29H59.5658ZM67.8699 29L75.3579 12.2H79.1979L86.7099 29H82.6299L76.4859 14.168H78.0219L71.8539 29H67.8699ZM71.6139 25.4L72.6459 22.448H81.2859L82.3419 25.4H71.6139ZM88.4529 29V12.2H92.3409V25.832H100.765V29H88.4529Z" fill="#F0FFFA"/>
+          <path d="M201.592 19.76H209.656V22.88H201.592V19.76ZM201.88 29H197.992V12.2H210.688V15.32H201.88V29ZM213.32 29V12.2H220.592C222.096 12.2 223.392 12.448 224.48 12.944C225.568 13.424 226.408 14.12 227 15.032C227.592 15.944 227.888 17.032 227.888 18.296C227.888 19.544 227.592 20.624 227 21.536C226.408 22.432 225.568 23.12 224.48 23.6C223.392 24.08 222.096 24.32 220.592 24.32H215.48L217.208 22.616V29H213.32ZM224 29L219.8 22.904H223.952L228.2 29H224ZM217.208 23.048L215.48 21.224H220.376C221.576 21.224 222.472 20.968 223.064 20.456C223.656 19.928 223.952 19.208 223.952 18.296C223.952 17.368 223.656 16.648 223.064 16.136C222.472 15.624 221.576 15.368 220.376 15.368H215.48L217.208 13.52V23.048ZM239.129 29.288C237.801 29.288 236.569 29.072 235.433 28.64C234.313 28.208 233.337 27.6 232.505 26.816C231.689 26.032 231.049 25.112 230.585 24.056C230.137 23 229.913 21.848 229.913 20.6C229.913 19.352 230.137 18.2 230.585 17.144C231.049 16.088 231.697 15.168 232.529 14.384C233.361 13.6 234.337 12.992 235.457 12.56C236.577 12.128 237.793 11.912 239.105 11.912C240.433 11.912 241.649 12.128 242.753 12.56C243.873 12.992 244.841 13.6 245.657 14.384C246.489 15.168 247.137 16.088 247.601 17.144C248.065 18.184 248.297 19.336 248.297 20.6C248.297 21.848 248.065 23.008 247.601 24.08C247.137 25.136 246.489 26.056 245.657 26.84C244.841 27.608 243.873 28.208 242.753 28.64C241.649 29.072 240.441 29.288 239.129 29.288ZM239.105 25.976C239.857 25.976 240.545 25.848 241.169 25.592C241.809 25.336 242.369 24.968 242.849 24.488C243.329 24.008 243.697 23.44 243.953 22.784C244.225 22.128 244.361 21.4 244.361 20.6C244.361 19.8 244.225 19.072 243.953 18.416C243.697 17.76 243.329 17.192 242.849 16.712C242.385 16.232 241.833 15.864 241.193 15.608C240.553 15.352 239.857 15.224 239.105 15.224C238.353 15.224 237.657 15.352 237.017 15.608C236.393 15.864 235.841 16.232 235.361 16.712C234.881 17.192 234.505 17.76 234.233 18.416C233.977 19.072 233.849 19.8 233.849 20.6C233.849 21.384 233.977 22.112 234.233 22.784C234.505 23.44 234.873 24.008 235.337 24.488C235.817 24.968 236.377 25.336 237.017 25.592C237.657 25.848 238.353 25.976 239.105 25.976ZM251.219 29V12.2H254.435L264.347 24.296H262.787V12.2H266.627V29H263.435L253.499 16.904H255.059V29H251.219ZM274.081 29V15.368H268.705V12.2H283.345V15.368H277.969V29H274.081Z" fill="#F0FFFA"/>
+          <path d="M144.04 39.68L105.96 25.2V14.8L144.04 0.319999V10.32L109.72 22.8V17.2L144.04 29.68V39.68ZM153.851 39.68V29.68L188.171 17.2V22.8L153.851 10.32V0.319999L191.931 14.8V25.2L153.851 39.68Z" fill="#41997E"/>
+        </svg>
+      </a>
+      <nav class="navbar-links" aria-label="Main navigation">
+        <a href="./index.html" class="navbar-link is-active">Home</a>
+        <a href="./portfolio.html" class="navbar-link">Portfolio</a>
+        <a href="./services.html" class="navbar-link">Services</a>
+        <a href="./contact.html" class="navbar-link">Contact</a>
+      </nav>
+      <div class="navbar-actions">
+        <a href="./contact.html" class="btn btn-primary btn-sm navbar-cta">
+          <span>Get Started</span>
+          <span class="arrow">→</span>
+        </a>
+        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu">
+    <a href="./index.html" class="mobile-link">Home</a>
+    <a href="./portfolio.html" class="mobile-link">Portfolio</a>
+    <a href="./services.html" class="mobile-link">Services</a>
+    <a href="./contact.html" class="mobile-link">Contact</a>
+    <a href="./contact.html" class="btn btn-primary btn-lg" style="margin-top: 1rem;">Get Started →</a>
+  </div>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-glow-secondary"></div>
+    <div class="container">
+      <div class="hero-content" style="max-width: 720px;">
+        <span class="overline reveal">WEB DESIGN STUDIO</span>
+        <h1 class="reveal reveal-delay-1">Websites that <span class="text-accent">work</span> for your business</h1>
+        <p class="reveal reveal-delay-2">We build professional, blazing-fast, and deeply functional websites for local businesses and restaurants. No templates. No fluff. Just results — delivered in under 2 weeks.</p>
+        <div class="hero-actions reveal reveal-delay-3">
+          <a href="./contact.html" class="btn btn-primary btn-lg">
+            <span>Get Started</span>
+            <span class="arrow">→</span>
+          </a>
+          <a href="./portfolio.html" class="btn btn-secondary btn-lg">
+            <span>View Portfolio</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SOCIAL PROOF ========== -->
+  <section class="section-sm social-proof-section" style="border-bottom: 1px solid var(--color-border); padding-block: var(--space-8);">
+    <div class="container">
+      <div class="social-proof-row reveal">
+        <span class="overline" style="opacity: 0.6;">TRUSTED BY LOCAL BUSINESSES IN</span>
+        <div class="social-proof-badges">
+          <span class="badge badge-outline">🇷🇴 Romania</span>
+          <span class="badge badge-outline">🇩🇪 Germany</span>
+          <span class="badge badge-outline">🍽️ Restaurants</span>
+          <span class="badge badge-outline">🏪 Local Services</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== HOW IT WORKS ========== -->
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <div class="section-header text-center reveal">
+        <span class="overline">HOW IT WORKS</span>
+        <h2>From idea to launch in<br><span class="text-accent">3 simple steps</span></h2>
+        <p style="margin-inline: auto;">No complicated processes. No endless meetings. We keep things simple and efficient so you can focus on your business.</p>
+      </div>
+
+      <div class="grid grid-3 stagger-children">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Tell Us About Your Business</h3>
+          <p>Fill out a simple form with your business details, photos, colors, and goals. Takes about 10 minutes.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>We Design & Build</h3>
+          <p>Our team crafts a custom website optimized for mobile, speed, and conversions. You review and we refine.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Launch & Grow</h3>
+          <p>Your site goes live with hosting, SEO, and ongoing support included. Start getting customers online.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SERVICES PREVIEW ========== -->
+  <section class="section" id="services-preview" style="background: var(--color-bg-elevated); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+    <div class="container">
+      <div class="section-header text-center reveal">
+        <span class="overline">SERVICES & PRICING</span>
+        <h2>Transparent pricing,<br>real results</h2>
+        <p style="margin-inline: auto;">Choose the package that fits your needs. Every site is custom-built, mobile-optimized, and designed to convert visitors into customers.</p>
+      </div>
+
+      <div class="grid grid-3 stagger-children">
+        <!-- Starter -->
+        <div class="pricing-card">
+          <div class="pricing-name">Starter</div>
+          <div class="pricing-description">Perfect for small businesses just getting online.</div>
+          <div class="pricing-price">
+            <span class="pricing-amount">€350</span>
+            <span class="pricing-currency">one-time</span>
+          </div>
+          <div class="pricing-features">
+            <div class="pricing-feature"><span class="check">✓</span> 4–5 page custom website</div>
+            <div class="pricing-feature"><span class="check">✓</span> Mobile-first responsive design</div>
+            <div class="pricing-feature"><span class="check">✓</span> Contact form</div>
+            <div class="pricing-feature"><span class="check">✓</span> 1 year hosting included</div>
+            <div class="pricing-feature"><span class="check">✓</span> Basic on-page SEO</div>
+          </div>
+          <a href="./contact.html" class="btn btn-secondary">Get Started</a>
+        </div>
+
+        <!-- Business (Featured) -->
+        <div class="pricing-card is-featured">
+          <div class="pricing-badge">Most Popular</div>
+          <div class="pricing-name">Business</div>
+          <div class="pricing-description">For businesses ready to get customers online.</div>
+          <div class="pricing-price">
+            <span class="pricing-amount">€550</span>
+            <span class="pricing-currency">one-time</span>
+          </div>
+          <div class="pricing-features">
+            <div class="pricing-feature"><span class="check">✓</span> Everything in Starter</div>
+            <div class="pricing-feature"><span class="check">✓</span> Reservation / booking system</div>
+            <div class="pricing-feature"><span class="check">✓</span> Photo gallery</div>
+            <div class="pricing-feature"><span class="check">✓</span> Google Maps integration</div>
+            <div class="pricing-feature"><span class="check">✓</span> Schema markup (Local SEO)</div>
+            <div class="pricing-feature"><span class="check">✓</span> Lead capture forms</div>
+          </div>
+          <a href="./contact.html" class="btn btn-primary">Get Started →</a>
+        </div>
+
+        <!-- Premium -->
+        <div class="pricing-card">
+          <div class="pricing-name">Premium</div>
+          <div class="pricing-description">Full-featured solution for maximum impact.</div>
+          <div class="pricing-price">
+            <span class="pricing-amount">€850</span>
+            <span class="pricing-currency">one-time</span>
+          </div>
+          <div class="pricing-features">
+            <div class="pricing-feature"><span class="check">✓</span> Everything in Business</div>
+            <div class="pricing-feature"><span class="check">✓</span> Online ordering integration</div>
+            <div class="pricing-feature"><span class="check">✓</span> Advanced SEO setup</div>
+            <div class="pricing-feature"><span class="check">✓</span> WhatsApp Business integration</div>
+            <div class="pricing-feature"><span class="check">✓</span> Monthly traffic report</div>
+            <div class="pricing-feature"><span class="check">✓</span> Priority support</div>
+          </div>
+          <a href="./contact.html" class="btn btn-secondary">Get Started</a>
+        </div>
+      </div>
+
+      <div class="text-center reveal" style="margin-top: var(--space-10);">
+        <a href="./services.html" class="btn btn-ghost">See full details & care plans →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== WHY DIGITALFRONT ========== -->
+  <section class="section" id="why-us">
+    <div class="container">
+      <div class="grid grid-60-40" style="align-items: center; gap: var(--space-12);">
+        <div class="reveal">
+          <span class="overline">WHY DIGITALFRONT</span>
+          <h2 style="margin-top: var(--space-4); margin-bottom: var(--space-6);">Not just another freelancer</h2>
+          <p style="margin-bottom: var(--space-6); font-size: var(--text-lg);">We sit in the sweet spot between overpriced agencies and unreliable freelancers. You get agency-quality work with the speed and affordability of a focused studio.</p>
+
+          <div style="display: flex; flex-direction: column; gap: var(--space-5);">
+            <div style="display: flex; gap: var(--space-4); align-items: flex-start;">
+              <span style="color: var(--color-accent); font-size: var(--text-xl); flex-shrink: 0;">◆</span>
+              <div>
+                <strong style="color: var(--color-text);">Structured Process</strong>
+                <p style="font-size: var(--text-sm); margin-top: var(--space-1);">From intake form to final delivery — every step is documented and transparent. No guesswork.</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: var(--space-4); align-items: flex-start;">
+              <span style="color: var(--color-accent); font-size: var(--text-xl); flex-shrink: 0;">◆</span>
+              <div>
+                <strong style="color: var(--color-text);">Mobile-First Always</strong>
+                <p style="font-size: var(--text-sm); margin-top: var(--space-1);">80%+ of your customers browse on mobile. Every pixel is optimized for thumbs first, mice second.</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: var(--space-4); align-items: flex-start;">
+              <span style="color: var(--color-accent); font-size: var(--text-xl); flex-shrink: 0;">◆</span>
+              <div>
+                <strong style="color: var(--color-text);">Long-Term Partner</strong>
+                <p style="font-size: var(--text-sm); margin-top: var(--space-1);">We don't disappear after launch. Website Care Plans keep your site updated, monitored, and performing.</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: var(--space-4); align-items: flex-start;">
+              <span style="color: var(--color-accent); font-size: var(--text-xl); flex-shrink: 0;">◆</span>
+              <div>
+                <strong style="color: var(--color-text);">Function Over Flash</strong>
+                <p style="font-size: var(--text-sm); margin-top: var(--space-1);">Your website isn't a digital brochure — it's a tool that brings reservations, orders, and leads directly to your business.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal reveal-delay-2" style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <div class="card card-glass" style="padding: var(--space-6);">
+            <div style="font-size: var(--text-5xl); font-weight: var(--weight-extrabold); font-family: var(--font-heading); color: var(--color-accent);">2 wks</div>
+            <p style="font-size: var(--text-sm);">Average delivery time</p>
+          </div>
+          <div class="card card-glass" style="padding: var(--space-6);">
+            <div style="font-size: var(--text-5xl); font-weight: var(--weight-extrabold); font-family: var(--font-heading); color: var(--color-text);">100%</div>
+            <p style="font-size: var(--text-sm);">Mobile-optimized</p>
+          </div>
+          <div class="card card-glass" style="padding: var(--space-6);">
+            <div style="font-size: var(--text-5xl); font-weight: var(--weight-extrabold); font-family: var(--font-heading); color: var(--color-text);">5+</div>
+            <p style="font-size: var(--text-sm);">Projects delivered</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA BANNER ========== -->
+  <section class="section" style="background: var(--color-bg-elevated); border-top: 1px solid var(--color-border);">
+    <div class="container">
+      <div class="reveal text-center" style="max-width: 600px; margin-inline: auto;">
+        <h2>Ready to transform your<br><span class="text-accent">online presence</span>?</h2>
+        <p style="margin: var(--space-4) auto var(--space-8); font-size: var(--text-lg);">Tell us about your business and get a custom website that actually drives results.</p>
+        <a href="./contact.html" class="btn btn-primary btn-lg">
+          <span>Start Your Project</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="./index.html" class="navbar-logo" aria-label="DigitalFront Home">
+            <svg width="284" height="40" viewBox="0 0 284 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1.992 29V12.2H9.624C11.448 12.2 13.056 12.552 14.448 13.256C15.84 13.944 16.928 14.912 17.712 16.16C18.496 17.408 18.888 18.888 18.888 20.6C18.888 22.296 18.496 23.776 17.712 25.04C16.928 26.288 15.84 27.264 14.448 27.968C13.056 28.656 11.448 29 9.624 29H1.992ZM5.88 25.808H9.432C10.552 25.808 11.52 25.6 12.336 25.184C13.168 24.752 13.808 24.144 14.256 23.36C14.72 22.576 14.952 21.656 14.952 20.6C14.952 19.528 14.72 18.608 14.256 17.84C13.808 17.056 13.168 16.456 12.336 16.04C11.52 15.608 10.552 15.392 9.432 15.392H5.88V25.808ZM21.8201 29V12.2H25.7081V29H21.8201ZM37.8071 29.288C36.4791 29.288 35.2551 29.08 34.1351 28.664C33.0311 28.232 32.0631 27.624 31.2311 26.84C30.4151 26.056 29.7751 25.136 29.3111 24.08C28.8631 23.024 28.6391 21.864 28.6391 20.6C28.6391 19.336 28.8631 18.176 29.3111 17.12C29.7751 16.064 30.4231 15.144 31.2551 14.36C32.0871 13.576 33.0631 12.976 34.1831 12.56C35.3031 12.128 36.5351 11.912 37.8791 11.912C39.3671 11.912 40.7031 12.16 41.8871 12.656C43.0871 13.152 44.0951 13.872 44.9111 14.816L42.4151 17.12C41.8071 16.48 41.1431 16.008 40.4231 15.704C39.7031 15.384 38.9191 15.224 38.0711 15.224C37.2551 15.224 36.5111 15.352 35.8391 15.608C35.1671 15.864 34.5831 16.232 34.0871 16.712C33.6071 17.192 33.2311 17.76 32.9591 18.416C32.7031 19.072 32.5751 19.8 32.5751 20.6C32.5751 21.384 32.7031 22.104 32.9591 22.76C33.2311 23.416 33.6071 23.992 34.0871 24.488C34.5831 24.968 35.1591 25.336 35.8151 25.592C36.4871 25.848 37.2231 25.976 38.0231 25.976C38.7911 25.976 39.5351 25.856 40.2551 25.616C40.9911 25.36 41.7031 24.936 42.3911 24.344L44.5991 27.152C43.6871 27.84 42.6231 28.368 41.4071 28.736C40.2071 29.104 39.0071 29.288 37.8071 29.288ZM41.0471 26.648V20.336H44.5991V27.152L41.0471 26.648ZM48.2108 29V12.2H52.0988V29H48.2108ZM59.5658 29V15.368H54.1898V12.2H68.8298V15.368H63.4538V29H59.5658ZM67.8699 29L75.3579 12.2H79.1979L86.7099 29H82.6299L76.4859 14.168H78.0219L71.8539 29H67.8699ZM71.6139 25.4L72.6459 22.448H81.2859L82.3419 25.4H71.6139ZM88.4529 29V12.2H92.3409V25.832H100.765V29H88.4529Z" fill="#F0FFFA"/>
+              <path d="M201.592 19.76H209.656V22.88H201.592V19.76ZM201.88 29H197.992V12.2H210.688V15.32H201.88V29ZM213.32 29V12.2H220.592C222.096 12.2 223.392 12.448 224.48 12.944C225.568 13.424 226.408 14.12 227 15.032C227.592 15.944 227.888 17.032 227.888 18.296C227.888 19.544 227.592 20.624 227 21.536C226.408 22.432 225.568 23.12 224.48 23.6C223.392 24.08 222.096 24.32 220.592 24.32H215.48L217.208 22.616V29H213.32ZM224 29L219.8 22.904H223.952L228.2 29H224ZM217.208 23.048L215.48 21.224H220.376C221.576 21.224 222.472 20.968 223.064 20.456C223.656 19.928 223.952 19.208 223.952 18.296C223.952 17.368 223.656 16.648 223.064 16.136C222.472 15.624 221.576 15.368 220.376 15.368H215.48L217.208 13.52V23.048ZM239.129 29.288C237.801 29.288 236.569 29.072 235.433 28.64C234.313 28.208 233.337 27.6 232.505 26.816C231.689 26.032 231.049 25.112 230.585 24.056C230.137 23 229.913 21.848 229.913 20.6C229.913 19.352 230.137 18.2 230.585 17.144C231.049 16.088 231.697 15.168 232.529 14.384C233.361 13.6 234.337 12.992 235.457 12.56C236.577 12.128 237.793 11.912 239.105 11.912C240.433 11.912 241.649 12.128 242.753 12.56C243.873 12.992 244.841 13.6 245.657 14.384C246.489 15.168 247.137 16.088 247.601 17.144C248.065 18.184 248.297 19.336 248.297 20.6C248.297 21.848 248.065 23.008 247.601 24.08C247.137 25.136 246.489 26.056 245.657 26.84C244.841 27.608 243.873 28.208 242.753 28.64C241.649 29.072 240.441 29.288 239.129 29.288ZM239.105 25.976C239.857 25.976 240.545 25.848 241.169 25.592C241.809 25.336 242.369 24.968 242.849 24.488C243.329 24.008 243.697 23.44 243.953 22.784C244.225 22.128 244.361 21.4 244.361 20.6C244.361 19.8 244.225 19.072 243.953 18.416C243.697 17.76 243.329 17.192 242.849 16.712C242.385 16.232 241.833 15.864 241.193 15.608C240.553 15.352 239.857 15.224 239.105 15.224C238.353 15.224 237.657 15.352 237.017 15.608C236.393 15.864 235.841 16.232 235.361 16.712C234.881 17.192 234.505 17.76 234.233 18.416C233.977 19.072 233.849 19.8 233.849 20.6C233.849 21.384 233.977 22.112 234.233 22.784C234.505 23.44 234.873 24.008 235.337 24.488C235.817 24.968 236.377 25.336 237.017 25.592C237.657 25.848 238.353 25.976 239.105 25.976ZM251.219 29V12.2H254.435L264.347 24.296H262.787V12.2H266.627V29H263.435L253.499 16.904H255.059V29H251.219ZM274.081 29V15.368H268.705V12.2H283.345V15.368H277.969V29H274.081Z" fill="#F0FFFA"/>
+              <path d="M144.04 39.68L105.96 25.2V14.8L144.04 0.319999V10.32L109.72 22.8V17.2L144.04 29.68V39.68ZM153.851 39.68V29.68L188.171 17.2V22.8L153.851 10.32V0.319999L191.931 14.8V25.2L153.851 39.68Z" fill="#41997E"/>
+            </svg>
+          </a>
+          <p>Functional, accessible, and beautifully crafted websites for local businesses. Delivered fast, built to last.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <div class="footer-links">
+            <a href="./index.html" class="footer-link">Home</a>
+            <a href="./portfolio.html" class="footer-link">Portfolio</a>
+            <a href="./services.html" class="footer-link">Services</a>
+            <a href="./contact.html" class="footer-link">Contact</a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Services</h4>
+          <div class="footer-links">
+            <a href="./services.html" class="footer-link">Website Creation</a>
+            <a href="./services.html#care-plans" class="footer-link">Care Plans</a>
+            <a href="./services.html#faq" class="footer-link">FAQ</a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Contact</h4>
+          <div class="footer-links">
+            <a href="mailto:hello@digitalfront.dev" class="footer-link">hello@digitalfront.dev</a>
+            <a href="tel:+40721000000" class="footer-link">+40 721 000 000</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copyright">© 2026 DigitalFront. All rights reserved.</p>
+        <div class="footer-socials">
+          <a href="#" class="footer-social-link" aria-label="Instagram">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/></svg>
+          </a>
+          <a href="#" class="footer-social-link" aria-label="Facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/></svg>
+          </a>
+          <a href="#" class="footer-social-link" aria-label="LinkedIn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="./src/js/main.js"></script>
+</body>
+</html>

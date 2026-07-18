@@ -1,0 +1,202 @@
+/* ================================================================
+   DIGITALFRONT — Layout System
+   Container, grid, responsive breakpoints (mobile-first)
+   ================================================================ */
+
+/* ================================================================
+   1. CONTAINER
+   ================================================================ */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+.container-narrow {
+  max-width: var(--container-narrow);
+}
+
+.container-wide {
+  max-width: var(--container-wide);
+}
+
+
+/* ================================================================
+   2. SECTIONS
+   ================================================================ */
+.section {
+  padding: var(--space-section) 0;
+  position: relative;
+  z-index: var(--z-base);
+}
+
+.section-sm {
+  padding: var(--space-section-sm) 0;
+}
+
+.section-header {
+  margin-bottom: var(--space-12);
+}
+
+.section-header .overline {
+  margin-bottom: var(--space-4);
+  display: block;
+}
+
+.section-header h2 {
+  margin-bottom: var(--space-4);
+}
+
+.section-header p {
+  font-size: var(--text-lg);
+  max-width: 55ch;
+}
+
+.section-header.text-center p {
+  margin-inline: auto;
+}
+
+
+/* ================================================================
+   3. GRID SYSTEM
+   ================================================================ */
+.grid {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.grid-2 {
+  grid-template-columns: 1fr;
+}
+
+.grid-3 {
+  grid-template-columns: 1fr;
+}
+
+.grid-4 {
+  grid-template-columns: 1fr;
+}
+
+/* Asymmetric grids */
+.grid-60-40 {
+  grid-template-columns: 1fr;
+}
+
+.grid-40-60 {
+  grid-template-columns: 1fr;
+}
+
+
+/* ================================================================
+   4. RESPONSIVE BREAKPOINTS (mobile-first)
+   ================================================================ */
+
+/* --- Tablet (≥ 640px) --- */
+@media (min-width: 640px) {
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* --- Desktop small (≥ 768px) --- */
+@media (min-width: 768px) {
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-60-40 {
+    grid-template-columns: 3fr 2fr;
+  }
+
+  .grid-40-60 {
+    grid-template-columns: 2fr 3fr;
+  }
+}
+
+/* --- Desktop (≥ 992px) --- */
+@media (min-width: 992px) {
+  .grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* --- Desktop large (≥ 1200px) --- */
+@media (min-width: 1200px) {
+  /* Fine-tuning if needed */
+}
+
+
+/* ================================================================
+   5. FLEX HELPERS
+   ================================================================ */
+.flex-wrap { flex-wrap: wrap; }
+
+.flex-grow { flex: 1; }
+
+.flex-shrink-0 { flex-shrink: 0; }
+
+/* Centering */
+.center-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Space between header style */
+.flex-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+
+/* ================================================================
+   6. RESPONSIVE VISIBILITY
+   ================================================================ */
+.hide-mobile {
+  display: none;
+}
+
+.show-mobile {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .hide-mobile {
+    display: block;
+  }
+
+  .show-mobile {
+    display: none;
+  }
+}
+
+@media (min-width: 992px) {
+  .hide-tablet {
+    display: block;
+  }
+
+  .show-tablet {
+    display: none;
+  }
+}
+
+
+/* ================================================================
+   7. ASPECT RATIOS
+   ================================================================ */
+.aspect-video   { aspect-ratio: 16 / 9; }
+.aspect-square  { aspect-ratio: 1 / 1; }
+.aspect-desktop { aspect-ratio: 16 / 10; }
+.aspect-portrait { aspect-ratio: 3 / 4; }

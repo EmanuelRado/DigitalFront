@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Project — DigitalFront Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../src/css/design-system.css">
+  <link rel="stylesheet" href="../src/css/layout.css">
+  <link rel="stylesheet" href="../src/css/components.css">
+  <link rel="stylesheet" href="../src/css/admin.css">
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <div style="display: flex; align-items: center; gap: var(--space-4);">
+        <a href="./index.html" class="btn btn-ghost btn-sm" aria-label="Back to dashboard">← Back</a>
+        <h1 style="font-size: var(--text-xl); margin: 0;" id="editor-title">New Project</h1>
+      </div>
+      <div class="admin-header-right">
+        <button class="btn btn-secondary btn-sm" id="btn-save-draft">Save Draft</button>
+        <button class="btn btn-primary btn-sm" id="btn-publish">Publish</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div class="container" style="max-width: 900px;">
+      <form id="project-form" class="admin-form">
+        <!-- Basic Info -->
+        <section class="admin-form-section">
+          <h2>Basic Information</h2>
+
+          <div class="form-group">
+            <label for="project-name" class="form-label">Project Name *</label>
+            <input type="text" id="project-name" class="form-input" placeholder="e.g. Trattoria della Nonna…" required>
+          </div>
+
+          <div class="form-group">
+            <label for="project-slug" class="form-label">URL Slug</label>
+            <div class="admin-input-with-prefix">
+              <span class="admin-input-prefix">/portfolio/</span>
+              <input type="text" id="project-slug" class="form-input" placeholder="trattoria-della-nonna">
+            </div>
+            <small class="form-hint">Auto-generated from name. Customize if needed.</small>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5);">
+            <div class="form-group">
+              <label for="project-category" class="form-label">Category *</label>
+              <select id="project-category" class="form-select" required>
+                <option value="">Select category…</option>
+                <option value="restaurant">Restaurant</option>
+                <option value="cafe">Cafe / Bistro</option>
+                <option value="business">Business / Service</option>
+                <option value="fitness">Fitness / Health</option>
+                <option value="medical">Medical / Clinic</option>
+                <option value="retail">Retail / Shop</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="project-client" class="form-label">Client Name</label>
+              <input type="text" id="project-client" class="form-input" placeholder="Client business name…">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="project-short-desc" class="form-label">Short Description</label>
+            <input type="text" id="project-short-desc" class="form-input" placeholder="One-line summary for portfolio cards…" maxlength="150">
+            <small class="form-hint">Max 150 characters. Shown on portfolio cards.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="project-description" class="form-label">Full Description</label>
+            <textarea id="project-description" class="form-textarea" rows="5" placeholder="Detailed project description…"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="project-live-url" class="form-label">Live Site URL</label>
+            <input type="url" id="project-live-url" class="form-input" placeholder="https://example.com…">
+          </div>
+        </section>
+
+        <!-- Tech Stack & Features -->
+        <section class="admin-form-section">
+          <h2>Tech Stack & Features</h2>
+
+          <div class="form-group">
+            <label class="form-label">Technologies Used</label>
+            <div class="admin-tag-input" id="tech-stack-container">
+              <div class="admin-tags" id="tech-stack-tags"></div>
+              <input type="text" class="admin-tag-field" id="tech-stack-input" placeholder="Type and press Enter…">
+            </div>
+            <small class="form-hint">Press Enter to add a technology tag.</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Key Features</label>
+            <div class="admin-tag-input" id="features-container">
+              <div class="admin-tags" id="features-tags"></div>
+              <input type="text" class="admin-tag-field" id="features-input" placeholder="Type and press Enter…">
+            </div>
+            <small class="form-hint">Press Enter to add a feature.</small>
+          </div>
+        </section>
+
+        <!-- Thumbnail -->
+        <section class="admin-form-section">
+          <h2>Thumbnail Image</h2>
+          <div class="admin-upload-area" id="thumbnail-upload">
+            <div class="admin-upload-placeholder" id="thumbnail-placeholder">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+              </svg>
+              <p>Drop image here or <span class="text-accent">browse</span></p>
+              <small>JPG, PNG, or WebP. Max 5MB.</small>
+            </div>
+            <img class="admin-upload-preview" id="thumbnail-preview" style="display: none;" alt="Thumbnail preview" width="400" height="250">
+            <input type="file" id="thumbnail-file" accept="image/jpeg,image/png,image/webp" hidden>
+          </div>
+        </section>
+
+        <!-- Screenshots / Gallery -->
+        <section class="admin-form-section">
+          <h2>Gallery Screenshots</h2>
+          <p style="color: var(--color-text-muted); margin-bottom: var(--space-4);">Upload screenshots from the creation process and final result.</p>
+
+          <div class="admin-gallery-grid" id="gallery-grid">
+            <!-- Existing images rendered here by JS -->
+          </div>
+
+          <div class="admin-upload-area admin-upload-small" id="gallery-upload">
+            <div class="admin-upload-placeholder">
+              <p>+ Add Screenshots</p>
+            </div>
+            <input type="file" id="gallery-files" accept="image/jpeg,image/png,image/webp" multiple hidden>
+          </div>
+        </section>
+
+        <!-- Creation Timeline -->
+        <section class="admin-form-section">
+          <h2>Creation Timeline</h2>
+          <p style="color: var(--color-text-muted); margin-bottom: var(--space-4);">Document the creation process step by step.</p>
+
+          <div id="timeline-entries">
+            <!-- Timeline entries rendered by JS -->
+          </div>
+
+          <button type="button" class="btn btn-secondary" id="btn-add-timeline" style="margin-top: var(--space-4);">
+            + Add Timeline Step
+          </button>
+        </section>
+      </form>
+    </div>
+  </main>
+
+  <script type="module" src="../src/js/admin/project-editor.js"></script>
+</body>
+</html>
