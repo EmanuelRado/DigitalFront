@@ -268,7 +268,7 @@
 }
 
 .hero-scroll-indicator:hover {
-  color: var(--color-text);
+  color: var(--color-accent);
   border-color: var(--color-accent);
   background: var(--color-accent-subtle);
   box-shadow: 0 0 15px var(--color-accent-glow);
