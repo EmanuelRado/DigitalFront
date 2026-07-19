@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initScrollProgress();
   setActiveNavLink();
+  initParticles();
 });
 
 
@@ -217,4 +218,101 @@ export function debounce(fn, delay = 250) {
     clearTimeout(timeout);
     timeout = setTimeout(() => fn(...args), delay);
   };
+}
+
+/* ================================================================
+   10. PARTICLES BACKGROUND
+   ================================================================ */
+function initParticles() {
+  const container = document.getElementById('particles-js');
+  if (!container || typeof particlesJS === 'undefined') return;
+
+  particlesJS('particles-js', {
+    "particles": {
+      "number": {
+        "value": 55,
+        "density": {
+          "enable": true,
+          "value_area": 800
+        }
+      },
+      "color": {
+        "value": "#41997E" // DigitalFront Teal Accent
+      },
+      "shape": {
+        "type": "circle",
+        "stroke": {
+          "width": 0,
+          "color": "#000000"
+        }
+      },
+      "opacity": {
+        "value": 0.35,
+        "random": true,
+        "anim": {
+          "enable": true,
+          "speed": 1,
+          "opacity_min": 0.1,
+          "sync": false
+        }
+      },
+      "size": {
+        "value": 3,
+        "random": true,
+        "anim": {
+          "enable": true,
+          "speed": 2,
+          "size_min": 1,
+          "sync": false
+        }
+      },
+      "line_linked": {
+        "enable": true,
+        "distance": 150,
+        "color": "#41997E",
+        "opacity": 0.22,
+        "width": 1
+      },
+      "move": {
+        "enable": true,
+        "speed": 1.2,
+        "direction": "none",
+        "random": true,
+        "straight": false,
+        "out_mode": "out",
+        "bounce": false,
+        "attract": {
+          "enable": false,
+          "rotateX": 600,
+          "rotateY": 1200
+        }
+      }
+    },
+    "interactivity": {
+      "detect_on": "canvas",
+      "events": {
+        "onhover": {
+          "enable": true,
+          "mode": "grab"
+        },
+        "onclick": {
+          "enable": true,
+          "mode": "push"
+        },
+        "resize": true
+      },
+      "modes": {
+        "grab": {
+          "distance": 140,
+          "line_linked": {
+            "opacity": 0.45
+          }
+        },
+        "push": {
+          "particles_nb": 3
+        }
+      }
+    },
+    "retina_detect": true
+  });
 }
