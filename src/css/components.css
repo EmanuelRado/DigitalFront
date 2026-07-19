@@ -248,25 +248,37 @@
 /* Hero on mobile */
 @media (max-width: 767px) {
   .hero {
-    min-height: auto;
-    padding-top: calc(var(--space-16) + 60px);
-    padding-bottom: var(--space-16);
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    padding-top: calc(var(--space-12) + 60px);
+    padding-bottom: var(--space-12);
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5); /* Consistent airy spacing between elements */
   }
 
   .hero h1 {
     font-size: clamp(2.25rem, 8vw, 3rem);
-    margin-bottom: var(--space-5);
+    margin-bottom: 0; /* Handled by gap */
+    line-height: 1.15;
   }
 
   .hero p {
     font-size: var(--text-base);
-    margin-bottom: var(--space-10);
+    margin-bottom: 0; /* Handled by gap */
     line-height: var(--lh-relaxed);
+    color: var(--color-text-secondary);
   }
 
   .hero-actions {
     flex-direction: column;
     gap: var(--space-4);
+    margin-top: var(--space-2); /* Extra breathing room before buttons */
   }
 
   .hero-actions .btn {
