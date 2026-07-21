@@ -59,7 +59,7 @@ async function loadProjectData(id) {
   const project = await fetchProjectById(id);
   if (!project) {
     alert('Project not found.');
-    window.location.href = './index.html';
+    window.location.href = '/admin/index.html';
     return;
   }
 
@@ -229,7 +229,7 @@ async function handleSave(status) {
   try {
     await saveProject(projectPayload, projectId);
     alert(status === 'published' ? 'Project published successfully!' : 'Draft saved!');
-    window.location.href = './index.html';
+    window.location.href = '/admin/index.html';
   } catch (err) {
     console.error('Error saving project:', err);
     alert('Failed to save project: ' + err.message);

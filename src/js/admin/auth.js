@@ -18,7 +18,7 @@ export async function requireAuth() {
   const user = await getCurrentUser();
 
   if (!user) {
-    window.location.href = './login.html';
+    window.location.href = '/admin/login.html';
     return null;
   }
 
@@ -56,7 +56,7 @@ export function initLoginForm() {
     if (isDemoMode()) {
       setTimeout(() => {
         submitBtn.classList.remove('is-loading');
-        window.location.href = './index.html';
+        window.location.href = '/admin/index.html';
       }, 800);
       return;
     }
@@ -71,7 +71,7 @@ export function initLoginForm() {
     }
 
     // Success — redirect to dashboard
-    window.location.href = './index.html';
+    window.location.href = '/admin/index.html';
   });
 
   function showError(msg) {
@@ -97,6 +97,6 @@ export function initLogout() {
 
   logoutBtn.addEventListener('click', async () => {
     await signOut();
-    window.location.href = './login.html';
+    window.location.href = '/admin/login.html';
   });
 }

@@ -82,14 +82,14 @@ function renderProjects(projects) {
   tbody.innerHTML = projects.map(p => `
     <tr>
       <td style="font-weight:var(--weight-medium);color:var(--color-text);">
-        <a href="./project-editor.html?id=${p.id}" style="color:var(--color-text);transition:color var(--duration-fast);" onmouseover="this.style.color='var(--color-accent)'" onmouseout="this.style.color='var(--color-text)'">${p.name}</a>
+        <a href="/admin/project-editor.html?id=${p.id}" style="color:var(--color-text);transition:color var(--duration-fast);" onmouseover="this.style.color='var(--color-accent)'" onmouseout="this.style.color='var(--color-text)'">${p.name}</a>
       </td>
       <td><span class="badge" style="background:rgba(255,255,255,0.06);color:var(--color-text-secondary);">${p.category || 'general'}</span></td>
       <td><span class="status-badge status-${p.status || 'published'}">${p.status || 'published'}</span></td>
       <td>${new Date(p.created || Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
       <td>
         <div class="admin-actions">
-          <a href="./project-editor.html?id=${p.id}" class="admin-action-btn">Edit</a>
+          <a href="/admin/project-editor.html?id=${p.id}" class="admin-action-btn">Edit</a>
           ${p.live_url ? `<a href="${p.live_url}" target="_blank" rel="noopener" class="admin-action-btn">Live ↗</a>` : ''}
           <button class="admin-action-btn is-danger" data-delete-type="project" data-delete-id="${p.id}" aria-label="Delete ${p.name}">Delete</button>
         </div>

@@ -4,8 +4,11 @@
   "rewrites": [
     { "source": "/admin", "destination": "/admin/index.html" },
     { "source": "/admin/", "destination": "/admin/index.html" },
+    { "source": "/admin/index.html", "destination": "/admin/index.html" },
     { "source": "/admin/login", "destination": "/admin/login.html" },
+    { "source": "/admin/login.html", "destination": "/admin/login.html" },
     { "source": "/admin/project-editor", "destination": "/admin/project-editor.html" },
+    { "source": "/admin/project-editor.html", "destination": "/admin/project-editor.html" },
     { "source": "/portfolio", "destination": "/portfolio.html" },
     { "source": "/services", "destination": "/services.html" },
     { "source": "/contact", "destination": "/contact.html" },
