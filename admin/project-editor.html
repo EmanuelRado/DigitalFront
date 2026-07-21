@@ -97,54 +97,22 @@
 
           <div class="form-group">
             <label class="form-label">Technologies Used</label>
-            <div class="admin-tag-input" id="tech-stack-container">
+            <div class="admin-tag-input" id="tech-stack-container" style="display:flex; gap:8px;">
               <div class="admin-tags" id="tech-stack-tags"></div>
-              <input type="text" class="admin-tag-field" id="tech-stack-input" placeholder="Type and press Enter…">
+              <input type="text" class="form-input" id="tech-stack-input" placeholder="Type and press Enter or Add…" style="flex:1;">
+              <button type="button" class="btn btn-secondary btn-sm" id="add-tech-stack-btn">+ Add</button>
             </div>
-            <small class="form-hint">Press Enter to add a technology tag.</small>
+            <small class="form-hint">Press Enter or click + Add to add a technology tag.</small>
           </div>
 
           <div class="form-group">
             <label class="form-label">Key Features</label>
-            <div class="admin-tag-input" id="features-container">
+            <div class="admin-tag-input" id="features-container" style="display:flex; gap:8px;">
               <div class="admin-tags" id="features-tags"></div>
-              <input type="text" class="admin-tag-field" id="features-input" placeholder="Type and press Enter…">
+              <input type="text" class="form-input" id="features-input" placeholder="Type and press Enter or Add…" style="flex:1;">
+              <button type="button" class="btn btn-secondary btn-sm" id="add-features-btn">+ Add</button>
             </div>
-            <small class="form-hint">Press Enter to add a feature.</small>
-          </div>
-        </section>
-
-        <!-- Thumbnail -->
-        <section class="admin-form-section">
-          <h2>Thumbnail Image</h2>
-          <div class="admin-upload-area" id="thumbnail-upload">
-            <div class="admin-upload-placeholder" id="thumbnail-placeholder">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
-              </svg>
-              <p>Drop image here or <span class="text-accent">browse</span></p>
-              <small>JPG, PNG, or WebP. Max 5MB.</small>
-            </div>
-            <img class="admin-upload-preview" id="thumbnail-preview" style="display: none;" alt="Thumbnail preview" width="400" height="250">
-            <input type="file" id="thumbnail-file" accept="image/jpeg,image/png,image/webp" hidden>
-          </div>
-        </section>
-
-        <!-- Screenshots / Gallery -->
-        <section class="admin-form-section">
-          <h2>Gallery Screenshots</h2>
-          <p style="color: var(--color-text-muted); margin-bottom: var(--space-4);">Upload screenshots from the creation process and final result.</p>
-
-          <div class="admin-gallery-grid" id="gallery-grid">
-            <!-- Existing images rendered here by JS -->
-          </div>
-
-          <div class="admin-upload-area admin-upload-small" id="gallery-upload">
-            <div class="admin-upload-placeholder">
-              <p>+ Add Screenshots</p>
-            </div>
-            <input type="file" id="gallery-files" accept="image/jpeg,image/png,image/webp" multiple hidden>
+            <small class="form-hint">Press Enter or click + Add to add a feature tag.</small>
           </div>
         </section>
 
@@ -153,11 +121,11 @@
           <h2>Creation Timeline</h2>
           <p style="color: var(--color-text-muted); margin-bottom: var(--space-4);">Document the creation process step by step.</p>
 
-          <div id="timeline-entries">
+          <div id="timeline-list">
             <!-- Timeline entries rendered by JS -->
           </div>
 
-          <button type="button" class="btn btn-secondary" id="btn-add-timeline" style="margin-top: var(--space-4);">
+          <button type="button" class="btn btn-secondary" id="add-timeline-btn" style="margin-top: var(--space-4);">
             + Add Timeline Step
           </button>
         </section>

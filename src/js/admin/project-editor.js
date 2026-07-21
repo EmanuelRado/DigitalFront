@@ -1,377 +1,239 @@
 /* ================================================================
-   DIGITALFRONT — Admin Project Editor JS
-   Create/edit projects, manage tags, upload images, timeline
+   DIGITALFRONT — Admin Project Editor Controller
+   Create/edit projects, manage tech stack tags, features, timeline
    ================================================================ */
 
 import { requireAuth, initLogout } from './auth.js';
-import { getPocketBase, getProjectById } from '../supabase.js';
+import { fetchProjectById, saveProject } from '../pocketbase-service.js';
 
 let projectId = null;
 let techStackTags = [];
 let featuresTags = [];
-let timelineEntries = [];
 let timelineCounter = 0;
 
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await requireAuth();
   if (!user) return;
 
-  // Check if editing existing project
+  initLogout();
+
+  // Check URL params for project ID
   const params = new URLSearchParams(window.location.search);
   projectId = params.get('id');
 
-  if (projectId) {
-    document.getElementById('editor-title').textContent = 'Edit Project';
-    document.title = 'Edit Project — DigitalFront Admin';
-    await loadProject(projectId);
-  }
-
-  initSlugGeneration();
+  initSlugGenerator();
   initTagInputs();
-  initTimeline();
-  initImageUploads();
+  initTimelineEditor();
   initSaveButtons();
+
+  if (projectId) {
+    document.getElementById('editor-page-title').textContent = 'Edit Project';
+    await loadProjectData(projectId);
+  }
 });
+
+/* ================================================================
+   AUTO SLUG GENERATOR
+   ================================================================ */
+function initSlugGenerator() {
+  const nameInput = document.getElementById('project-name');
+  const slugInput = document.getElementById('project-slug');
+
+  if (nameInput && slugInput) {
+    nameInput.addEventListener('input', () => {
+      if (!projectId) {
+        slugInput.value = nameInput.value
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-');
+      }
+    });
+  }
+}
 
 /* ================================================================
    LOAD EXISTING PROJECT
    ================================================================ */
-async function loadProject(id) {
-  const project = await getProjectById(id);
-  if (!project) return;
+async function loadProjectData(id) {
+  const project = await fetchProjectById(id);
+  if (!project) {
+    alert('Project not found.');
+    window.location.href = './index.html';
+    return;
+  }
 
-  // Basic fields
   document.getElementById('project-name').value = project.name || '';
   document.getElementById('project-slug').value = project.slug || '';
-  document.getElementById('project-category').value = project.category || '';
-  document.getElementById('project-client').value = project.client_name || '';
   document.getElementById('project-short-desc').value = project.short_description || '';
   document.getElementById('project-description').value = project.description || '';
+  document.getElementById('project-category').value = project.category || 'restaurant';
+  document.getElementById('project-client').value = project.client_name || '';
   document.getElementById('project-live-url').value = project.live_url || '';
 
-  // Tech stack tags
-  techStackTags = project.tech_stack || [];
-  renderTags('tech-stack-tags', techStackTags);
+  // Tech stack & features tags
+  techStackTags = Array.isArray(project.tech_stack) ? project.tech_stack : [];
+  featuresTags = Array.isArray(project.features) ? project.features : [];
+  renderTags('tech-stack', techStackTags);
+  renderTags('features', featuresTags);
 
-  // Features tags
-  featuresTags = project.features || [];
-  renderTags('features-tags', featuresTags);
-
-  // Thumbnail
-  if (project.thumbnail_url) {
-    const preview = document.getElementById('thumbnail-preview');
-    const placeholder = document.getElementById('thumbnail-placeholder');
-    if (preview) {
-      preview.src = project.thumbnail_url;
-      preview.style.display = 'block';
-    }
-    if (placeholder) placeholder.style.display = 'none';
-  }
-
-  // Gallery
-  if (project.project_media?.length) {
-    renderGallery(project.project_media);
-  }
-
-  // Timeline
-  if (project.project_timeline?.length) {
-    project.project_timeline.forEach(step => addTimelineEntry(step));
+  // Timeline steps
+  if (Array.isArray(project.project_timeline) && project.project_timeline.length) {
+    const list = document.getElementById('timeline-list');
+    if (list) list.innerHTML = '';
+    project.project_timeline.forEach(step => addTimelineEntry(step.step_title, step.step_description, step.step_date));
   }
 }
 
 /* ================================================================
-   SLUG GENERATION
-   ================================================================ */
-function initSlugGeneration() {
-  const nameInput = document.getElementById('project-name');
-  const slugInput = document.getElementById('project-slug');
-
-  if (!nameInput || !slugInput) return;
-
-  nameInput.addEventListener('input', () => {
-    if (!projectId) { // Only auto-generate for new projects
-      slugInput.value = generateSlug(nameInput.value);
-    }
-  });
-}
-
-function generateSlug(text) {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
-/* ================================================================
-   TAG INPUTS
+   TAG MANAGEMENT
    ================================================================ */
 function initTagInputs() {
-  setupTagInput('tech-stack-input', 'tech-stack-tags', techStackTags);
-  setupTagInput('features-input', 'features-tags', featuresTags);
+  setupTagInput('tech-stack', techStackTags);
+  setupTagInput('features', featuresTags);
 }
 
-function setupTagInput(inputId, containerId, tagsArray) {
-  const input = document.getElementById(inputId);
-  if (!input) return;
+function setupTagInput(type, tagsArray) {
+  const input = document.getElementById(`${type}-input`);
+  const addBtn = document.getElementById(`add-${type}-btn`);
 
-  input.addEventListener('keydown', (e) => {
+  if (!input || !addBtn) return;
+
+  const addTag = () => {
+    const val = input.value.trim();
+    if (val && !tagsArray.includes(val)) {
+      tagsArray.push(val);
+      renderTags(type, tagsArray);
+      input.value = '';
+    }
+  };
+
+  addBtn.onclick = addTag;
+  input.onkeypress = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      const value = input.value.trim();
-      if (value && !tagsArray.includes(value)) {
-        tagsArray.push(value);
-        renderTags(containerId, tagsArray);
-        input.value = '';
-      }
+      addTag();
     }
-  });
+  };
 }
 
-function renderTags(containerId, tagsArray) {
-  const container = document.getElementById(containerId);
+function renderTags(type, tagsArray) {
+  const container = document.getElementById(`${type}-tags`);
   if (!container) return;
 
   container.innerHTML = tagsArray.map((tag, i) => `
-    <span class="admin-tag">
+    <span class="badge badge-accent" style="display:inline-flex; align-items:center; gap:6px;">
       ${tag}
-      <button class="admin-tag-remove" data-index="${i}" aria-label="Remove ${tag}">×</button>
+      <button type="button" data-tag-type="${type}" data-tag-index="${i}" style="background:none;border:none;color:inherit;cursor:pointer;font-weight:bold;">×</button>
     </span>
   `).join('');
 
-  // Remove handler
-  container.querySelectorAll('.admin-tag-remove').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx = parseInt(btn.dataset.index);
+  container.querySelectorAll('button').forEach(btn => {
+    btn.onclick = () => {
+      const idx = parseInt(btn.dataset.tagIndex);
       tagsArray.splice(idx, 1);
-      renderTags(containerId, tagsArray);
-    });
+      renderTags(type, tagsArray);
+    };
   });
 }
 
 /* ================================================================
-   TIMELINE
+   TIMELINE EDITOR
    ================================================================ */
-function initTimeline() {
-  const addBtn = document.getElementById('btn-add-timeline');
+function initTimelineEditor() {
+  const addBtn = document.getElementById('add-timeline-btn');
   if (addBtn) {
-    addBtn.addEventListener('click', () => addTimelineEntry());
+    addBtn.onclick = () => addTimelineEntry('', '', '');
   }
 }
 
-function addTimelineEntry(data = null) {
-  timelineCounter++;
-  const id = timelineCounter;
-  const container = document.getElementById('timeline-entries');
-  if (!container) return;
+function addTimelineEntry(title = '', desc = '', date = '') {
+  const list = document.getElementById('timeline-list');
+  if (!list) return;
 
-  const entry = document.createElement('div');
-  entry.className = 'admin-timeline-entry';
-  entry.id = `timeline-entry-${id}`;
-  entry.innerHTML = `
-    <div class="admin-timeline-entry-header">
-      <h4>Step ${id}</h4>
-      <button class="admin-action-btn is-danger" data-remove-timeline="${id}" aria-label="Remove step">Remove</button>
+  timelineCounter++;
+  const id = `timeline-step-${timelineCounter}`;
+
+  const item = document.createElement('div');
+  item.className = 'admin-timeline-entry';
+  item.style.cssText = 'background:var(--color-bg-card); border:1px solid var(--color-border); padding:var(--space-4); border-radius:var(--radius-md); margin-bottom:var(--space-3);';
+  item.innerHTML = `
+    <div style="display:flex; justify-content:space-between; margin-bottom:var(--space-2);">
+      <strong style="font-size:var(--text-xs); text-transform:uppercase; color:var(--color-text-muted);">Step #${timelineCounter}</strong>
+      <button type="button" class="admin-action-btn is-danger remove-timeline-btn" style="padding:2px 8px; font-size:var(--text-xs);">Remove</button>
     </div>
-    <div class="form-group">
-      <label class="form-label">Step Title</label>
-      <input type="text" class="form-input timeline-title" value="${data?.step_title || ''}" placeholder="e.g. Design Concept…">
+    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:var(--space-3); margin-bottom:var(--space-2);">
+      <input type="text" class="input timeline-title" placeholder="Step Title (e.g. Client Brief)" value="${title}">
+      <input type="date" class="input timeline-date" value="${date}">
     </div>
-    <div class="form-group">
-      <label class="form-label">Description</label>
-      <textarea class="form-textarea timeline-desc" rows="2" placeholder="What happened in this step…">${data?.step_description || ''}</textarea>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Date</label>
-      <input type="date" class="form-input timeline-date" value="${data?.step_date || ''}">
-    </div>
+    <textarea class="input timeline-desc" rows="2" placeholder="Step details and objectives...">${desc}</textarea>
   `;
 
-  container.appendChild(entry);
-
-  // Remove handler
-  entry.querySelector(`[data-remove-timeline="${id}"]`).addEventListener('click', () => {
-    entry.remove();
-  });
-
-  timelineEntries.push({ id, data });
+  item.querySelector('.remove-timeline-btn').onclick = () => item.remove();
+  list.appendChild(item);
 }
 
 /* ================================================================
-   IMAGE UPLOADS
-   ================================================================ */
-function initImageUploads() {
-  // Thumbnail
-  const thumbnailUpload = document.getElementById('thumbnail-upload');
-  const thumbnailFile = document.getElementById('thumbnail-file');
-
-  if (thumbnailUpload && thumbnailFile) {
-    thumbnailUpload.addEventListener('click', () => thumbnailFile.click());
-    thumbnailFile.addEventListener('change', handleThumbnailChange);
-    initDragDrop(thumbnailUpload, thumbnailFile);
-  }
-
-  // Gallery
-  const galleryUpload = document.getElementById('gallery-upload');
-  const galleryFiles = document.getElementById('gallery-files');
-
-  if (galleryUpload && galleryFiles) {
-    galleryUpload.addEventListener('click', () => galleryFiles.click());
-    galleryFiles.addEventListener('change', handleGalleryChange);
-    initDragDrop(galleryUpload, galleryFiles);
-  }
-}
-
-function initDragDrop(dropArea, fileInput) {
-  ['dragenter', 'dragover'].forEach(event => {
-    dropArea.addEventListener(event, (e) => {
-      e.preventDefault();
-      dropArea.classList.add('is-dragover');
-    });
-  });
-
-  ['dragleave', 'drop'].forEach(event => {
-    dropArea.addEventListener(event, (e) => {
-      e.preventDefault();
-      dropArea.classList.remove('is-dragover');
-    });
-  });
-
-  dropArea.addEventListener('drop', (e) => {
-    const dt = e.dataTransfer;
-    fileInput.files = dt.files;
-    fileInput.dispatchEvent(new Event('change'));
-  });
-}
-
-function handleThumbnailChange(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const preview = document.getElementById('thumbnail-preview');
-  const placeholder = document.getElementById('thumbnail-placeholder');
-
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    if (preview) {
-      preview.src = ev.target.result;
-      preview.style.display = 'block';
-    }
-    if (placeholder) placeholder.style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-}
-
-function handleGalleryChange(e) {
-  const files = Array.from(e.target.files);
-  const grid = document.getElementById('gallery-grid');
-  if (!grid) return;
-
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const item = document.createElement('div');
-      item.className = 'admin-gallery-item';
-      item.innerHTML = `
-        <img src="${ev.target.result}" alt="Gallery image" width="150" height="94">
-        <button class="admin-gallery-remove" aria-label="Remove image">×</button>
-      `;
-      item.querySelector('.admin-gallery-remove').addEventListener('click', () => item.remove());
-      grid.appendChild(item);
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-function renderGallery(media) {
-  const grid = document.getElementById('gallery-grid');
-  if (!grid) return;
-
-  grid.innerHTML = media.map(m => `
-    <div class="admin-gallery-item" data-media-id="${m.id}">
-      <img src="${m.url}" alt="${m.caption || ''}" width="150" height="94">
-      <button class="admin-gallery-remove" aria-label="Remove image">×</button>
-    </div>
-  `).join('');
-
-  grid.querySelectorAll('.admin-gallery-remove').forEach(btn => {
-    btn.addEventListener('click', () => btn.closest('.admin-gallery-item').remove());
-  });
-}
-
-/* ================================================================
-   SAVE / PUBLISH
+   SAVE PROJECT
    ================================================================ */
 function initSaveButtons() {
   const saveDraftBtn = document.getElementById('btn-save-draft');
   const publishBtn = document.getElementById('btn-publish');
 
-  if (saveDraftBtn) saveDraftBtn.addEventListener('click', () => saveProject('draft'));
-  if (publishBtn) publishBtn.addEventListener('click', () => saveProject('published'));
+  if (saveDraftBtn) saveDraftBtn.onclick = () => handleSave('draft');
+  if (publishBtn) publishBtn.onclick = () => handleSave('published');
 }
 
-async function saveProject(status) {
+async function handleSave(status) {
   const name = document.getElementById('project-name').value.trim();
   const slug = document.getElementById('project-slug').value.trim();
 
   if (!name || !slug) {
-    alert('Project name and slug are required.');
+    alert('Project Name and Slug are required.');
     return;
   }
 
-  const pb = getPocketBase();
-
-  const projectData = {
-    name,
-    slug,
-    description: document.getElementById('project-description').value.trim(),
-    short_description: document.getElementById('project-short-desc').value.trim(),
-    category: document.getElementById('project-category').value,
-    client_name: document.getElementById('project-client').value.trim(),
-    live_url: document.getElementById('project-live-url').value.trim(),
-    tech_stack: techStackTags,
-    features: featuresTags,
-    thumbnail_url: `/images/portfolio/${slug}-thumbnail.png`,
-    mobile_url: `/images/portfolio/${slug}-mobile.png`,
-    status
-  };
-
-  try {
-    let savedRecord;
-    if (projectId) {
-      savedRecord = await pb.collection('projects').update(projectId, projectData);
-    } else {
-      savedRecord = await pb.collection('projects').create(projectData);
-      projectId = savedRecord.id;
-      window.history.replaceState({}, '', `?id=${projectId}`);
-    }
-
-    // Replace timeline items
-    const existingTimeline = await pb.collection('project_timeline').getFullList({ filter: `project = "${projectId}"` });
-    for (const item of existingTimeline) {
-      await pb.collection('project_timeline').delete(item.id);
-    }
-
-    const entries = document.querySelectorAll('.admin-timeline-entry');
-    let order = 0;
-    for (const entry of entries) {
-      const title = entry.querySelector('.timeline-title')?.value.trim();
-      if (!title) continue;
-      await pb.collection('project_timeline').create({
-        project: projectId,
+  // Collect timeline entries
+  const timelineData = [];
+  document.querySelectorAll('.admin-timeline-entry').forEach((entry, idx) => {
+    const title = entry.querySelector('.timeline-title')?.value.trim();
+    if (title) {
+      timelineData.push({
         step_title: title,
         step_description: entry.querySelector('.timeline-desc')?.value.trim() || '',
         step_date: entry.querySelector('.timeline-date')?.value || '',
-        sort_order: order++
+        sort_order: idx
       });
     }
+  });
 
-    alert(status === 'published' ? 'Project published!' : 'Draft saved!');
+  const projectPayload = {
+    name,
+    slug,
+    short_description: document.getElementById('project-short-desc').value.trim(),
+    description: document.getElementById('project-description').value.trim(),
+    category: document.getElementById('project-category').value,
+    client_name: document.getElementById('project-client').value.trim(),
+    live_url: document.getElementById('project-live-url').value.trim(),
+    thumbnail_url: `/images/portfolio/${slug}-thumbnail.png`,
+    mobile_url: `/images/portfolio/${slug}-mobile.png`,
+    tech_stack: techStackTags,
+    features: featuresTags,
+    project_timeline: timelineData,
+    status
+  };
+
+  const publishBtn = document.getElementById('btn-publish');
+  if (publishBtn) publishBtn.classList.add('is-loading');
+
+  try {
+    await saveProject(projectPayload, projectId);
+    alert(status === 'published' ? 'Project published successfully!' : 'Draft saved!');
+    window.location.href = './index.html';
   } catch (err) {
-    console.error('Error saving project to PocketBase:', err);
-    alert('Error saving: ' + err.message);
+    console.error('Error saving project:', err);
+    alert('Failed to save project: ' + err.message);
+  } finally {
+    if (publishBtn) publishBtn.classList.remove('is-loading');
   }
 }

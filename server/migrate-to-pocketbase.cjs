@@ -57,7 +57,140 @@ async function migrate() {
     console.log('Collection "contact_submissions" notice:', err.message);
   }
 
-  console.log('PocketBase Best Practices schema verification complete!');
+  // 5. Clients Collection
+  let clientsCol;
+  try {
+    clientsCol = await pb.collections.getOne('clients');
+    console.log('Collection "clients" already exists, ensuring schema...');
+  } catch (err) {
+    console.log('Creating collection "clients"...');
+    clientsCol = await pb.collections.create({
+      name: 'clients',
+      type: 'base',
+      listRule: '',
+      viewRule: '',
+      createRule: '',
+      updateRule: '',
+      deleteRule: '',
+      fields: [
+        { name: 'company_name', type: 'text', required: true },
+        { name: 'contact_person', type: 'text', required: false },
+        { name: 'email', type: 'text', required: true },
+        { name: 'phone', type: 'text', required: false },
+        { name: 'city', type: 'text', required: false },
+        { name: 'status', type: 'select', required: false, values: ['active', 'inactive'], maxSelect: 1 }
+      ],
+      indexes: [
+        'CREATE INDEX IF NOT EXISTS idx_clients_status ON clients (status)',
+        'CREATE INDEX IF NOT EXISTS idx_clients_email ON clients (email)'
+      ]
+    });
+    console.log('Collection "clients" created successfully.');
+  }
+
+  // 6. Subscriptions Collection
+  let subsCol;
+  try {
+    subsCol = await pb.collections.getOne('subscriptions');
+    console.log('Collection "subscriptions" already exists, ensuring schema...');
+  } catch (err) {
+    console.log('Creating collection "subscriptions"...');
+    subsCol = await pb.collections.create({
+      name: 'subscriptions',
+      type: 'base',
+      listRule: '',
+      viewRule: '',
+      createRule: '',
+      updateRule: '',
+      deleteRule: '',
+      fields: [
+        { name: 'client', type: 'relation', required: false, collectionId: clientsCol.id, maxSelect: 1, cascadeDelete: false },
+        { name: 'plan_name', type: 'select', required: false, values: ['Essential €25/mo', 'Active €55/mo', 'Growth €120/mo'], maxSelect: 1 },
+        { name: 'monthly_price', type: 'number', required: false },
+        { name: 'billing_status', type: 'select', required: false, values: ['active', 'overdue', 'cancelled'], maxSelect: 1 },
+        { name: 'next_billing_date', type: 'text', required: false },
+        { name: 'notes', type: 'text', required: false }
+      ],
+      indexes: [
+        'CREATE INDEX IF NOT EXISTS idx_subscriptions_client ON subscriptions (client)',
+        'CREATE INDEX IF NOT EXISTS idx_subscriptions_status ON subscriptions (billing_status)'
+      ]
+    });
+    console.log('Collection "subscriptions" created successfully.');
+  }
+
+  // Seeding Sample Clients & Subscriptions
+  console.log('Seeding sample clients and subscriptions if missing...');
+  const sampleClients = [
+    {
+      company_name: 'Trattoria della Nonna SRL',
+      contact_person: 'Giovanni Rossi',
+      email: 'contact@trattorianonna.ro',
+      phone: '+40 722 111 222',
+      city: 'București',
+      status: 'active'
+    },
+    {
+      company_name: 'NordHaus Fenster GmbH',
+      contact_person: 'Hans Weber',
+      email: 'info@nordhaus-fenster.de',
+      phone: '+49 30 123456',
+      city: 'Berlin',
+      status: 'active'
+    }
+  ];
+
+  const createdClients = [];
+  for (const clientData of sampleClients) {
+    let existing = null;
+    try {
+      existing = await pb.collection('clients').getFirstListItem(`email="${clientData.email}"`);
+    } catch (e) {}
+
+    if (!existing) {
+      const created = await pb.collection('clients').create(clientData);
+      console.log(`Created sample client: ${created.company_name} (${created.id})`);
+      createdClients.push(created);
+    } else {
+      console.log(`Sample client already exists: ${existing.company_name} (${existing.id})`);
+      createdClients.push(existing);
+    }
+  }
+
+  const sampleSubs = [
+    {
+      client: createdClients[0].id,
+      plan_name: 'Active €55/mo',
+      monthly_price: 55,
+      billing_status: 'active',
+      next_billing_date: '2026-08-01',
+      notes: 'Hosting + lunar update 2h + SEO check'
+    },
+    {
+      client: createdClients[1].id,
+      plan_name: 'Growth €120/mo',
+      monthly_price: 120,
+      billing_status: 'active',
+      next_billing_date: '2026-08-01',
+      notes: 'Care plan premium: redesign modular, mentenanță zilnică'
+    }
+  ];
+
+  for (const subData of sampleSubs) {
+    let existing = null;
+    try {
+      existing = await pb.collection('subscriptions').getFirstListItem(`client="${subData.client}"`);
+    } catch (e) {}
+
+    if (!existing) {
+      const created = await pb.collection('subscriptions').create(subData);
+      console.log(`Created sample subscription for client ${subData.client}: ${created.plan_name}`);
+    } else {
+      console.log(`Subscription already exists for client ${subData.client}: ${existing.plan_name}`);
+    }
+  }
+
+  console.log('PocketBase Best Practices schema verification & seeding complete!');
 }
 
 migrate().catch(console.error);
