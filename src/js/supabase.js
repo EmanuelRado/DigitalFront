@@ -1,20 +1,22 @@
 /* ================================================================
-   DIGITALFRONT — SQLite / REST API Client Adapter
-   Replaces Supabase direct queries with standard fetch requests
-   to the local Express API (in dev) / Vercel Serverless (in prod).
+   DIGITALFRONT — PocketBase Client Adapter
    ================================================================ */
 
+import PocketBase from 'pocketbase';
+
+const POCKETBASE_URL = 'http://127.0.0.1:8090';
+const pb = new PocketBase(POCKETBASE_URL);
+
 /**
- * Check if the database is in demo mode.
- * Now always returns false since we are using a real local SQLite DB.
+ * Check if demo mode is enabled (always false now that PocketBase is active).
  */
 export function isDemoMode() {
   return false;
 }
 
-// Dummy initializers to preserve compatibility with existing imports
-export function initSupabase() { return null; }
-export function getSupabase() { return null; }
+export function initSupabase() { return pb; }
+export function getSupabase() { return pb; }
+export function getPocketBase() { return pb; }
 
 /* ================================================================
    PROJECT QUERIES
@@ -26,13 +28,15 @@ export function getSupabase() { return null; }
  * @returns {Promise<Array>} Array of project objects
  */
 export async function getProjects(category = null) {
-  const url = category ? `/api/projects?category=${encodeURIComponent(category)}` : '/api/projects';
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('API server returned error status');
-    return await res.json();
+    const filter = category ? `status = "published" && category = "${category}"` : 'status = "published"';
+    const records = await pb.collection('projects').getFullList({
+      filter,
+      sort: 'sort_order,-created'
+    });
+    return records;
   } catch (err) {
-    console.error('Error fetching projects:', err);
+    console.error('Error fetching projects from PocketBase:', err);
     return [];
   }
 }
@@ -44,27 +48,53 @@ export async function getProjects(category = null) {
  */
 export async function getProjectBySlug(slug) {
   try {
-    const res = await fetch(`/api/projects/slug/${encodeURIComponent(slug)}`);
-    if (!res.ok) throw new Error('API server returned error status');
-    return await res.json();
+    const project = await pb.collection('projects').getFirstListItem(`slug = "${slug}"`);
+    
+    // Load timeline items
+    const timeline = await pb.collection('project_timeline').getFullList({
+      filter: `project = "${project.id}"`,
+      sort: 'sort_order'
+    });
+    project.project_timeline = timeline;
+
+    // Load media items
+    const media = await pb.collection('project_media').getFullList({
+      filter: `project = "${project.id}"`,
+      sort: 'sort_order'
+    });
+    project.project_media = media;
+
+    return project;
   } catch (err) {
-    console.error('Error fetching project by slug:', err);
+    console.error('Error fetching project by slug from PocketBase:', err);
     return null;
   }
 }
 
 /**
  * Fetch a project by ID.
- * @param {string} id - Project UUID
+ * @param {string} id - Project ID
  * @returns {Promise<Object|null>}
  */
 export async function getProjectById(id) {
   try {
-    const res = await fetch(`/api/projects/${encodeURIComponent(id)}`);
-    if (!res.ok) throw new Error('API server returned error status');
-    return await res.json();
+    const project = await pb.collection('projects').getOne(id);
+
+    const timeline = await pb.collection('project_timeline').getFullList({
+      filter: `project = "${project.id}"`,
+      sort: 'sort_order'
+    });
+    project.project_timeline = timeline;
+
+    const media = await pb.collection('project_media').getFullList({
+      filter: `project = "${project.id}"`,
+      sort: 'sort_order'
+    });
+    project.project_media = media;
+
+    return project;
   } catch (err) {
-    console.error('Error fetching project by ID:', err);
+    console.error('Error fetching project by ID from PocketBase:', err);
     return null;
   }
 }
@@ -75,11 +105,14 @@ export async function getProjectById(id) {
  */
 export async function getCategories() {
   try {
-    const res = await fetch('/api/categories');
-    if (!res.ok) throw new Error('API server returned error status');
-    return await res.json();
+    const records = await pb.collection('projects').getFullList({
+      filter: 'status = "published"',
+      fields: 'category'
+    });
+    const categories = [...new Set(records.map(r => r.category).filter(Boolean))];
+    return categories;
   } catch (err) {
-    console.error('Error fetching categories:', err);
+    console.error('Error fetching categories from PocketBase:', err);
     return [];
   }
 }
@@ -95,16 +128,18 @@ export async function getCategories() {
  */
 export async function submitContactForm(formData) {
   try {
-    const res = await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
+    await pb.collection('contact_submissions').create({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || '',
+      business_type: formData.business_type || '',
+      budget_range: formData.budget_range || '',
+      message: formData.message,
+      status: 'new'
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Server error');
     return { success: true };
   } catch (err) {
-    console.error('Error submitting contact form:', err);
+    console.error('Error submitting contact form to PocketBase:', err);
     return { success: false, error: err.message };
   }
 }
@@ -114,27 +149,18 @@ export async function submitContactForm(formData) {
    ================================================================ */
 
 /**
- * Sign in with email and password.
+ * Sign in with email and password (Superuser authentication).
  * @param {string} email
  * @param {string} password
  * @returns {Promise<{ user?: Object, error?: string }>}
  */
 export async function signIn(email, password) {
   try {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Invalid credentials');
-    
-    // Save session in localStorage
-    localStorage.setItem('df_admin_user', JSON.stringify(data.user));
-    return { user: data.user };
+    const authData = await pb.collection('_superusers').authWithPassword(email, password);
+    return { user: authData.record };
   } catch (err) {
-    console.error('Error signing in:', err);
-    return { error: err.message };
+    console.error('Error signing in to PocketBase:', err);
+    return { error: 'Invalid credentials or PocketBase superuser account.' };
   }
 }
 
@@ -142,12 +168,7 @@ export async function signIn(email, password) {
  * Sign out the current user.
  */
 export async function signOut() {
-  try {
-    await fetch('/api/auth/logout', { method: 'POST' });
-  } catch (err) {
-    console.error('Sign out error:', err);
-  }
-  localStorage.removeItem('df_admin_user');
+  pb.authStore.clear();
 }
 
 /**
@@ -155,14 +176,7 @@ export async function signOut() {
  * @returns {Promise<Object|null>}
  */
 export async function getCurrentUser() {
-  const userStr = localStorage.getItem('df_admin_user');
-  if (!userStr) return null;
-  try {
-    return JSON.parse(userStr);
-  } catch {
-    localStorage.removeItem('df_admin_user');
-    return null;
-  }
+  return pb.authStore.isValid ? pb.authStore.record : null;
 }
 
 /**
@@ -170,6 +184,5 @@ export async function getCurrentUser() {
  * @returns {Promise<boolean>}
  */
 export async function isAuthenticated() {
-  const user = await getCurrentUser();
-  return !!user;
+  return pb.authStore.isValid;
 }

@@ -5,3 +5,6 @@ dist/
 *.db
 *.db-journal
 .vercel
+pb_data/
+pocketbase/pb_data/
+pocketbase/*.zip

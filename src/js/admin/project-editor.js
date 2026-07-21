@@ -4,7 +4,7 @@
    ================================================================ */
 
 import { requireAuth, initLogout } from './auth.js';
-import { getSupabase, getProjectById, isDemoMode } from '../supabase.js';
+import { getPocketBase, getProjectById } from '../supabase.js';
 
 let projectId = null;
 let techStackTags = [];
@@ -322,18 +322,7 @@ async function saveProject(status) {
     return;
   }
 
-  // Collect timeline entries
-  const timelineData = [];
-  const entries = document.querySelectorAll('.admin-timeline-entry');
-  entries.forEach((entry, i) => {
-    const title = entry.querySelector('.timeline-title')?.value.trim();
-    if (!title) return;
-    timelineData.push({
-      step_title: title,
-      step_description: entry.querySelector('.timeline-desc')?.value.trim() || null,
-      step_date: entry.querySelector('.timeline-date')?.value || null,
-    });
-  });
+  const pb = getPocketBase();
 
   const projectData = {
     name,
@@ -345,42 +334,44 @@ async function saveProject(status) {
     live_url: document.getElementById('project-live-url').value.trim(),
     tech_stack: techStackTags,
     features: featuresTags,
-    status,
-    project_timeline: timelineData,
-    // Add default mock media items if they don't exist
-    project_media: [
-      { url: `/images/portfolio/${slug}-thumbnail.png`, caption: `${name} Desktop UI`, media_type: 'image' },
-      { url: `/images/portfolio/${slug}-mobile.png`, caption: `${name} Mobile UI`, media_type: 'image' }
-    ]
+    thumbnail_url: `/images/portfolio/${slug}-thumbnail.png`,
+    mobile_url: `/images/portfolio/${slug}-mobile.png`,
+    status
   };
 
   try {
-    let res;
+    let savedRecord;
     if (projectId) {
-      res = await fetch(`/api/projects/${projectId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(projectData)
-      });
+      savedRecord = await pb.collection('projects').update(projectId, projectData);
     } else {
-      res = await fetch('/api/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(projectData)
-      });
+      savedRecord = await pb.collection('projects').create(projectData);
+      projectId = savedRecord.id;
+      window.history.replaceState({}, '', `?id=${projectId}`);
     }
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Server error');
+    // Replace timeline items
+    const existingTimeline = await pb.collection('project_timeline').getFullList({ filter: `project = "${projectId}"` });
+    for (const item of existingTimeline) {
+      await pb.collection('project_timeline').delete(item.id);
+    }
 
-    if (!projectId && data.id) {
-      projectId = data.id;
-      window.history.replaceState({}, '', `?id=${projectId}`);
+    const entries = document.querySelectorAll('.admin-timeline-entry');
+    let order = 0;
+    for (const entry of entries) {
+      const title = entry.querySelector('.timeline-title')?.value.trim();
+      if (!title) continue;
+      await pb.collection('project_timeline').create({
+        project: projectId,
+        step_title: title,
+        step_description: entry.querySelector('.timeline-desc')?.value.trim() || '',
+        step_date: entry.querySelector('.timeline-date')?.value || '',
+        sort_order: order++
+      });
     }
 
     alert(status === 'published' ? 'Project published!' : 'Draft saved!');
   } catch (err) {
-    console.error('Error saving project:', err);
+    console.error('Error saving project to PocketBase:', err);
     alert('Error saving: ' + err.message);
   }
 }

@@ -4,6 +4,7 @@
    ================================================================ */
 
 import { requireAuth, initLogout } from './auth.js';
+import { getPocketBase } from '../supabase.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await requireAuth();
@@ -18,22 +19,19 @@ document.addEventListener('DOMContentLoaded', async () => {
    LOAD DASHBOARD DATA
    ================================================================ */
 async function loadDashboard() {
+  const pb = getPocketBase();
   try {
     // Load projects
-    const resProj = await fetch('/api/admin/projects');
-    if (!resProj.ok) throw new Error('Failed to fetch projects');
-    const projects = await resProj.json();
+    const projects = await pb.collection('projects').getFullList({ sort: '-created' });
     renderProjects(projects);
     updateStats(projects, 'projects');
 
     // Load leads
-    const resLeads = await fetch('/api/admin/submissions');
-    if (!resLeads.ok) throw new Error('Failed to fetch submissions');
-    const leads = await resLeads.json();
+    const leads = await pb.collection('contact_submissions').getFullList({ sort: '-created' });
     renderLeads(leads);
     updateStats(leads, 'leads');
   } catch (err) {
-    console.error('Error loading dashboard data:', err);
+    console.error('Error loading dashboard data from PocketBase:', err);
   }
 }
 
@@ -58,7 +56,7 @@ function renderProjects(projects) {
       </td>
       <td>${p.category || '—'}</td>
       <td><span class="status-badge status-${p.status}">${p.status}</span></td>
-      <td>${new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+      <td>${new Date(p.created).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
       <td>
         <div class="admin-actions">
           <a href="./project-editor.html?id=${p.id}" class="admin-action-btn">Edit</a>
@@ -90,7 +88,7 @@ function renderLeads(leads) {
       <td>${l.business_type || '—'}</td>
       <td>${l.budget_range || '—'}</td>
       <td><span class="status-badge status-${l.status}">${l.status}</span></td>
-      <td>${new Date(l.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</td>
+      <td>${new Date(l.created).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</td>
     </tr>
   `).join('');
 }
@@ -122,7 +120,6 @@ function initDeleteModal() {
 
   if (!modal) return;
 
-  // Delegate click on delete buttons
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-delete-id]');
     if (!btn) return;
@@ -141,19 +138,16 @@ function initDeleteModal() {
     confirmBtn.classList.add('is-loading');
 
     try {
-      const res = await fetch(`/api/projects/${deleteId}`, {
-        method: 'DELETE'
-      });
-      if (!res.ok) throw new Error('Delete request failed');
+      const pb = getPocketBase();
+      await pb.collection('projects').delete(deleteId);
     } catch (err) {
-      console.error('Error deleting project:', err);
-      alert('Failed to delete project. Please check if the local server is running.');
+      console.error('Error deleting project in PocketBase:', err);
+      alert('Failed to delete project in PocketBase.');
     }
 
     closeDeleteModal();
     confirmBtn.classList.remove('is-loading');
 
-    // Reload
     await loadDashboard();
   });
 
