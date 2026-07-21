@@ -27,7 +27,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   initSaveButtons();
 
   if (projectId) {
-    document.getElementById('editor-page-title').textContent = 'Edit Project';
+    const titleEl = document.getElementById('editor-title') || document.getElementById('editor-page-title');
+    if (titleEl) titleEl.textContent = 'Edit Project';
     await loadProjectData(projectId);
   }
 });
@@ -63,13 +64,18 @@ async function loadProjectData(id) {
     return;
   }
 
-  document.getElementById('project-name').value = project.name || '';
-  document.getElementById('project-slug').value = project.slug || '';
-  document.getElementById('project-short-desc').value = project.short_description || '';
-  document.getElementById('project-description').value = project.description || '';
-  document.getElementById('project-category').value = project.category || 'restaurant';
-  document.getElementById('project-client').value = project.client_name || '';
-  document.getElementById('project-live-url').value = project.live_url || '';
+  const setVal = (elemId, val) => {
+    const el = document.getElementById(elemId);
+    if (el) el.value = val || '';
+  };
+
+  setVal('project-name', project.name);
+  setVal('project-slug', project.slug);
+  setVal('project-short-desc', project.short_description);
+  setVal('project-description', project.description);
+  setVal('project-category', project.category);
+  setVal('project-client', project.client_name);
+  setVal('project-live-url', project.live_url);
 
   // Tech stack & features tags
   techStackTags = Array.isArray(project.tech_stack) ? project.tech_stack : [];
