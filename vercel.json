@@ -1,11 +1,15 @@
 {
   "cleanUrls": true,
-  "framework": "vite",
+  "outputDirectory": "dist",
   "rewrites": [
     { "source": "/admin", "destination": "/admin/index.html" },
     { "source": "/admin/", "destination": "/admin/index.html" },
     { "source": "/admin/login", "destination": "/admin/login.html" },
-    { "source": "/admin/project-editor", "destination": "/admin/project-editor.html" }
+    { "source": "/admin/project-editor", "destination": "/admin/project-editor.html" },
+    { "source": "/portfolio", "destination": "/portfolio.html" },
+    { "source": "/services", "destination": "/services.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/portfolio-item", "destination": "/portfolio-item.html" }
   ],
   "headers": [
     {
